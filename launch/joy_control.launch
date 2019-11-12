@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="joy" type="joy_node" name="joy_node"/>
+  <node pkg="ros_bluetooth" type="joystick_control.py" name="joy" output="screen"/>
+  <node pkg="ros_bluetooth" type="m7_bt_driver.py" name="bluetooth" output="screen"/>
+</launch>

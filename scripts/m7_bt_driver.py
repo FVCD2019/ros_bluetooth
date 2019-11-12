@@ -24,8 +24,14 @@ rospy.loginfo("Staring ROS-Bluetooth Driver node")
 
 ##########################################################################################
 
-#Speed handler, this will send speed to BL 
+#Speed handler, this will send speed to BL
 #Send control input to arduino after receive message from subscriber '/set_control'
+
+def signal_handler(signal,frame):
+	print('pressed ctrl + c!!!')
+	bluetooth_serial_handle.close()
+	sys.exit(0)
+signal.signal(signal.SIGINT,signal_handler)
 
 def control_send(data):
 
@@ -39,24 +45,25 @@ def control_send(data):
 
                 a=math.floor(steer_val/10)
                 b=steer_val-10*a
-		
+
                 c=math.floor(speed_val/100)
                 d=math.floor(speed_val/10)-10*c
                 e=speed_val-100*c-10*d
-		
+
 	except:
 		rospy.logwarn("Found exception in BT driver node")
                 steer_val = 0
                 speed_val = 0
-	
+
 	send_data = '%d%d%d%d%d' %(int(a),int(b),int(c),int(d),int(e))
+	print(send_data)
 
 	try:
 		bluetooth_serial_handle.send(str(send_data))
 	except:
 		rospy.logwarn("Unable to send BL data")
 		pass
-	
+
 ##########################################################################################
 
 #Subscribers (receive control input from main computer(ROS))
@@ -65,12 +72,12 @@ rospy.Subscriber('/set_control', Int32MultiArray, control_send)
 
 ##########################################################################################
 
-#Function to connect to BL robot: establish bluetooth connection 
-	
+#Function to connect to BL robot: establish bluetooth connection
+
 def connect():
     global bluetooth_mac
-    global bluetooth_serial_handle	
-    while(True):    
+    global bluetooth_serial_handle
+    while(True):
         try:
             bluetooth_serial_handle = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
             bluetooth_serial_handle.connect((bluetooth_mac, 1))
@@ -86,7 +93,7 @@ bluetooth_serial_handle = connect()
 
 ##########################################################################################
 
-#Main code : receive data from arduino 
+#Main code : receive data from arduino
 
 if __name__ == '__main__':
 
@@ -104,5 +111,4 @@ if __name__ == '__main__':
 		bluetooth_serial_handle = connect()
 		pass
 
-	bluetooth_serial_handle.close()
-
+	#bluetooth_serial_handle.close()
