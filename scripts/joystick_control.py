@@ -21,7 +21,9 @@ class JOY:
 		quit_button = data.buttons[6]
 
 		throttle_val = (throttle+1)*450
-		steer_val = (steer+1)*72 + 20
+		steer_val = (steer+1)*50
+		if steer_val == 100:
+			steer_val = 99
 
 		if (reset_button):
 			throttle_val = 0
@@ -30,7 +32,7 @@ class JOY:
 		if (quit_button):
 			done = True
 
-		self.control_data.data = [throttle_val, steer_val]
+		self.control_data.data = [steer_val, throttle_val]
 		self.c_pub.publish(self.control_data)
 
 	def do(self):
