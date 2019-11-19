@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="ros_bluetooth" type="control.py" name="control_bluetooth" output="screen"/>
+</launch>
