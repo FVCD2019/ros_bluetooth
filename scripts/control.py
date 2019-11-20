@@ -30,40 +30,36 @@ rospy.loginfo("Staring ROS-Bluetooth Driver node")
 
 def signal_handler(signal,frame):
 	print('pressed ctrl + c!!!')
+	stop()
 	bluetooth_serial_handle.close()
 	sys.exit(0)
 signal.signal(signal.SIGINT,signal_handler)
 
 def control_send(data):
-
-        global bluetooth_serial_handle
+    global bluetooth_serial_handle
 
 	#Note, here we may need change in one motor speed, now taking both speed as data
 	try:
-
-                #steer_val = data.data[0] # assuming 2digits:ab
-                #speed_val = data.data[1] # assuming 3digits:cde
-
-		speed_val = (data.linear.x/10)
+		speed_val = (data.linear.x/5)
 		steer_val = (-data.angular.z / 3.14)  # * 0 ~ 100
+
 		if steer_val < -0.5:
 			steer_val = -0.5
 		if steer_val > 0.5:
 			steer_val = 0.5
 		steer_val = (steer_val + 0.5) * 100
+
 		if speed_val > 0.5:
 			speed_val = 0.5
 		if speed_val < -0.5:
 			speed_val = -0.5
 		speed_val = (speed_val+0.5) * 900
 
-
-                a=math.floor(steer_val/10)
-                b=steer_val-10*a
-
-                c=math.floor(speed_val/100)
-                d=math.floor(speed_val/10)-10*c
-                e=speed_val-100*c-10*d
+		a = math.floor(steer_val/10)
+		b = steer_val-10*a
+		c = math.floor(speed_val/100)
+		d = math.floor(speed_val/10)-10*c
+		e = speed_val-100*c-10*d
 
 	except:
 		rospy.logwarn("Found exception in BT driver node")
@@ -86,7 +82,29 @@ def control_send(data):
 rospy.Subscriber('/cmd_vel', Twist, control_send)
 
 ##########################################################################################
+def stop():
+    global bluetooth_serial_handle
 
+	#Note, here we may need change in one motor speed, now taking both speed as data
+
+    steer_val = 0
+    speed_val = 0
+	a = math.floor(steer_val/10)
+	b = steer_val-10*a
+	c = math.floor(speed_val/100)
+	d = math.floor(speed_val/10)-10*c
+	e = speed_val-100*c-10*d
+
+	send_data = '%d%d%d%d%d' %(int(a),int(b),int(c),int(d),int(e))
+	print("[stop] : ",send_data)
+
+	try:
+		bluetooth_serial_handle.send(str(send_data))
+	except:
+		rospy.logwarn("Unable to send BL data")
+		pass
+
+##########################################################################################
 #Function to connect to BL robot: establish bluetooth connection
 
 def connect():
