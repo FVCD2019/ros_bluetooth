@@ -40,7 +40,7 @@ def control_send(data):
 
 	#Note, here we may need change in one motor speed, now taking both speed as data
 	try:
-		speed_val = (data.linear.x/5)
+		speed_val = (data.linear.x/0.8)
 		steer_val = (-data.angular.z / 3.14)  # * 0 ~ 100
 
 		if steer_val < -0.5:
