@@ -5,6 +5,7 @@ import rospy
 from std_msgs.msg import Int32, Int64
 from std_msgs.msg import Int32MultiArray
 from geometry_msgs.msg import Twist
+from move_base_msgs.msg import MoveBaseActionResult
 
 import string
 import time
@@ -134,13 +135,6 @@ def control_send(data):
 		rospy.logwarn("Unable to send BL data")
 		pass
 
-##########################################################################################
-
-#Subscribers (receive control input from main computer(ROS))
-
-rospy.Subscriber('/cmd_vel', Twist, control_send)
-
-##########################################################################################
 def stop():
 	global bluetooth_serial_handle
 
@@ -155,13 +149,25 @@ def stop():
 	e = speed_val-100*c-10*d
 
 	send_data = '%d%d%d%d%d' %(int(a),int(b),int(c),int(d),int(e))
-	print("[stop] : ",send_data)
 
 	try:
 		bluetooth_serial_handle.send(str(send_data))
+		print("[stop] : ", send_data)
 	except:
 		rospy.logwarn("Unable to send BL data")
 		pass
+
+def result_check(msg):
+	if msg.status.status == 3:
+		stop()
+		print("goodbye")
+		
+##########################################################################################
+
+#Subscribers (receive control input from main computer(ROS))
+
+rospy.Subscriber('/cmd_vel', Twist, control_send)
+rospy.Subscriber('/move_base/result', MoveBaseActionResult, result_check)
 
 ##########################################################################################
 #Function to connect to BL robot: establish bluetooth connection
