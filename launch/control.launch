@@ -1,4 +1,5 @@
 <launch>
-  <node pkg="ros_bluetooth" type="cmd_vel_to_ackermann_drive.py" name="ackermann" output="screen"/>
+  <node pkg="ros_bluetooth" type="cmd_vel_to_ackermann_drive.py" name="ackermann"/>
+  <!--node pkg="ros_bluetooth" type="control.py" name="control_bluetooth"/-->
   <node pkg="ros_bluetooth" type="control.py" name="control_bluetooth" output="screen"/>
 </launch>

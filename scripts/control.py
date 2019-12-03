@@ -67,12 +67,12 @@ def control_send(data):
 		#	speed_val = -0.36 - abs(steer_val)*0.06
 		if speed_val > 0.5:
 			speed_val = 0.5
-		elif speed_val > 0 and speed_val < 0.32 :
-			speed_val = 0.32
+		elif speed_val > 0 and speed_val < 0.30 :
+			speed_val = 0.30
 		elif speed_val < -0.5:
 			speed_val = -0.5
-		elif speed_val < 0 and speed_val > -0.37 :
-			speed_val = -0.37
+		elif speed_val < 0 and speed_val > -0.35 :
+			speed_val = -0.35
 		speed_val = (speed_val+0.5) * 900
 		#if(speed_val < 450):
 		#	steer_val = steer_val*-1
