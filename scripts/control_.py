@@ -45,7 +45,6 @@ def signal_handler(signal,frame):
 	sys.exit(0)
 signal.signal(signal.SIGINT,signal_handler)
 
-
 def control_send(data):
 	global g_dis
 	global finish_flag
@@ -60,7 +59,7 @@ def control_send(data):
 	try:
 		if (finish_flag != True):
 			speed_val = data.drive.speed
-			steer_val = (-data.drive.steering_angle )*1.1  # * -0.5 ~ 0.5
+			steer_val = (-data.drive.steering_angle )  # * -0.5 ~ 0.5
 
 			#if speed_val > 0.4:
 			#	speed_val = 0.4
@@ -92,17 +91,17 @@ def control_send(data):
 			#print(first_chk)
 			if(first_chk == 1):
 				speed_val = 850
-			print(g_dis)
-			if(g_dis < 30):
-				speed_val = speed_val * 0.8
+	
+			if(g_dis < 50):
+				speed_val = speed_val * 0.7
 					
 
 			print(stop_flag)
-			if(stop_flag and g_dis >= 50):
+			if(stop_flag):
 				if(speed_val > 450):
-					speed_val = 840
+					speed_val = 850
 				else:
-					speed_val = 60
+					speed_val = 68
 
 
 			print("[steer] : ", int(steer_val), "     [speed] : ", int(speed_val))
@@ -132,7 +131,6 @@ def control_send(data):
 
 	send_data = '%d%d%d%d%d' %(int(a),int(b),int(c),int(d),int(e))
 	#print(send_data)
-
 
 	try:
 		bluetooth_serial_handle.send(str(send_data))
